@@ -1,0 +1,66 @@
+{
+    "username": "Antoine",
+    "email": "",
+    "google_acc": {
+        "username": "Antoine",
+        "googleId": "123",
+        "thumbnail": "???"
+    },
+    "office_acc": {},
+    "widgets": [{
+            "name": "city_temperature",
+            "service": "weather",
+            "description": "Affichage de la temperature pour une ville",
+            "params": {
+                "name": "city",
+                "type": "string",
+                "city_id": 29000,
+                "celsius": true,
+                "timer": "3600"
+                },
+            "design": {
+                "type": "small",
+                "color": "blue"
+            }
+        },
+        {
+            "name": "bourse_current",
+            "service": "stock",
+            "description": "Affichage du cours boursier",
+            "params": {
+                "timer": "5min",
+                "type": "MFST"
+            },
+            "design": {
+                "type": "big",
+                "color": "red"
+            }
+        },{
+            "name": "article_list",
+            "description": "Affichage de la liste des derniers articles",
+            "service": "rss",
+            "params": {
+                "link": "https://feedforall.com/sample-feed.xml",
+                "timer": "3600"
+                },
+            "design": {
+                "type": "big",
+                "color": "yellow"
+            }
+        },
+        {
+            "name": "twitter_last",
+            "description": "Affichage du dernier tweet d'un utilisateur",
+            "service": "twitter",
+            "params": {
+                "type": "user",
+                "id@": "Niavart",
+                "timer": "3600"
+                },
+            "design": {
+                "type": "big",
+                "color": "yellow"
+            }
+        }
+    ]
+}

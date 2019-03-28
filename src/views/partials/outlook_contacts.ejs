@@ -1,0 +1,39 @@
+<html>
+<div class="widget-class" id=<%=widP.u_widget.ind %>>
+  <h2>Contacts</h2>
+  <table class="table">
+    <thead class="thead-light">
+      <th scope="col">Name</th>
+      <th scope="col">Last Name</th>
+      <th scope="col">Email Address</th>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+  <script>
+    $(function () {
+      var idP = '<%= widP.u_widget.ind %>'
+      var email = '<%= (userP.office_acc.email ? userP.office_acc.email : "") %>'
+      var limitP = '<%= (widP.u_widget.params.limit ? widP.u_widget.params.limit : 10) %>'
+      var timerP = '<%= (widP.u_widget.params.timer ? widP.u_widget.params.timer : 999) %>'
+
+      function getcontacts(limitP) {
+        $("#" + idP + " > table > tbody").html("")
+        $.post("/auth/outlook/get_contacts", {
+          limit: limitP
+        }, function (contactslist) {
+          contactslist.forEach(contact => {
+            let contactMail = contact.EmailAddresses[0] ? contact.EmailAddresses[0].Address : "NONE"
+            $("#" + idP + " > table > tbody").append("<tr><td>" + contact.GivenName + "</td>\
+              <td>" + contact.Surname + "</td>\
+              <td><a target='_blank' href='mailto:" + contactMail +"'>" + contactMail + "</a></td></tr>")
+          });
+        });
+      }
+      getcontacts(limitP)
+      setInterval(getcontacts, timerP * 60000 * 60, limitP);
+    });
+  </script>
+</div>
+
+</html>

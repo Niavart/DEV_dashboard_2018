@@ -1,0 +1,35 @@
+<html>
+<div class="widget-class" id=<%=widP.u_widget.ind %>>
+  <h2></h2>
+    <div class="image-container">
+        <h3>
+            <img id="icon" class="icon-weather" src="" alt="icon" />
+        </h3><br>
+        <p>Winds: </p>
+    </div>
+    <script>
+        $(function () {
+            var idP = '<%= widP.u_widget.ind %>'
+            var cityP = '<%= (widP.u_widget.params.city ? widP.u_widget.params.city : "") %>'
+            var timerP = '<%= (widP.u_widget.params.timer ? widP.u_widget.params.timer : 999) %>'
+
+            function getweather(cityP) {
+                $("#" + idP + " > div > h3").html("<img class='icon-weather' src='' alt='icon' />")
+                $("#" + idP + " > div > p").html("Winds:");
+                $.post("/auth/weather/get_weather", {
+                    city: cityP,
+                }, function (data) {
+                    console.log(data)
+                    $("#" + idP + " > div > h3 > img").attr("src", data.weather[1]);
+                    $("#" + idP + " > div > h3").append(data.weather[2], "°C");
+                    $("#" + idP + " > div > p").append(data.weather[4], " km/h");
+                    $("#" + idP + " > h2").append(data.weather[5]);
+                });
+            }
+            getweather(cityP)
+            setInterval(getweather, timerP * 60000 * 60, cityP);
+        });
+    </script>
+</div><hr>
+
+</html>

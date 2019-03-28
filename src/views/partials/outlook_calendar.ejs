@@ -1,0 +1,123 @@
+<html>
+<div class="widget-class" id=<%=widP.u_widget.ind %>>
+  <div class="popup-overlay">
+    <!--Creates the popup content-->
+    <div class="popup-content">
+      <h2>Pop-Up</h2>
+      <p> This is an example pop-up that you can make using jQuery.</p>
+      <label for='number'>Subject: </label><input type='text' id="subject" name='Subject'><br>
+      <label for='number'>Content: </label><input type='text' id="content" name='Content'><br>
+      <div>
+        <label for="start">Start: </label>
+        <input type="datetime-local" id="start" name="Start" />
+      </div>
+
+      <div>
+        <label for="end">End: </label>
+        <input type="datetime-local" id="end" name="End" />
+      </div>
+      <!--popup's close button-->
+      <button class="close">Confirm</button>
+    </div>
+  </div>
+  <div>
+    <h2>Calendar</h2><button class="open">Add Event</button>
+  </div>
+  <table class="table">
+    <thead class="thead-light">
+      <th scope="col">Event</th>
+      <th scope="col">Start</th>
+      <th scope="col">End</th>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+  <style>
+    button {
+      display: inline-block;
+      vertical-align: middle;
+      border-radius: 30px;
+      margin: .20rem;
+      font-size: 1rem;
+      color: #666666;
+      background: #ffffff;
+      border: 1px solid #666666;
+    }
+
+    .popup-overlay {
+      /*Hides pop-up when there is no "active" class*/
+      visibility: hidden;
+      position: absolute;
+      background: #ffffff;
+      border: 3px solid #666666;
+      width: 50%;
+      height: 50%;
+      left: 25%;
+    }
+
+    .popup-overlay .close {
+      float: none;
+    }
+
+    .popup-overlay.active {
+      /*displays pop-up when "active" class is present*/
+      visibility: visible;
+      text-align: center;
+    }
+
+    .popup-content {
+      /*Hides pop-up content when there is no "active" class */
+      visibility: hidden;
+    }
+
+    .popup-content.active {
+      /*Shows pop-up content when "active" class is present */
+      visibility: visible;
+    }
+  </style>
+  <script>
+    $(function () {
+      var idP = '<%= widP.u_widget.ind %>'
+      var email = '<%= (userP.office_acc.email ? userP.office_acc.email : "") %>'
+      var limitP = '<%= (widP.u_widget.params.limit ? widP.u_widget.params.limit : 10) %>'
+      var timerP = '<%= (widP.u_widget.params.timer ? widP.u_widget.params.timer : 999) %>'
+
+      function getevents(limitP) {
+        $("#" + idP + " > table > tbody").html("")
+        $.post("/auth/outlook/get_calendar", {
+          limit: limitP
+        }, function (eventlist) {
+          eventlist.forEach(event => {
+            $("#" + idP + " > table > tbody").append("<tr><td>" + event.Subject + "</td>\
+              <td>" + event.Start.DateTime.toString().slice(
+                0, -11) + "</td>\
+              <td>" + event.End.DateTime.toString().slice(0, -11) +
+              "</td></tr>")
+          });
+        });
+      }
+      getevents(limitP)
+      setInterval(getevents, timerP * 60000 * 60, limitP);
+    });
+    $(".open").on("click", function () {
+      $(".popup-overlay, .popup-content").addClass("active");
+    });
+
+    $(".close").on("click", function () {
+      $.post("/auth/outlook/create_event", {
+        Subject: $(".popup-content").find("input#subject").val(),
+        Content: $(".popup-content").find("input#content").val(),
+        Start: $(".popup-content").find("input#start").val(),
+        End: $(".popup-content").find("input#end").val()
+      }, function (okdata) {
+        $(".popup-overlay, .popup-content").removeClass("active");
+        console.log(okdata)
+        location.reload()
+      }).fail(function (err) {
+        $(".popup-overlay, .popup-content").removeClass("active");
+      });
+    });
+  </script>
+</div><hr>
+
+</html>

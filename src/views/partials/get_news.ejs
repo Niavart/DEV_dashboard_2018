@@ -1,0 +1,49 @@
+<html>
+<div class="widget-class" id=<%=widP.u_widget.ind %>>
+    <div class="image-container">
+      <h2>LeMonde</h2>
+      <table class="table">
+        <thead class="thead-light">
+          <th scope="col">Title</th>
+          <th scope="col">Description</th>
+          <th scope="col">Url</th>
+        </thead>
+        <tbody>
+            <tr id="articles-container">
+              <td id="td-title"> </td>
+              <td id="td-body"> </td>
+              <td id="td-link"> </td>
+            </tr>
+        </tbody>
+      </table>
+    </div>
+</div><hr>
+</html>
+
+<script>
+    $(function () {
+        var idP = '<%= widP.u_widget.ind %>'
+        var countryP = '<%= (widP.u_widget.params.country ? widP.u_widget.params.country : "") %>'
+        var timerP = '<%= (widP.u_widget.params.timer ? widP.u_widget.params.timer : 999) %>'
+
+        function getlemonde(countryP) {
+          $("#articles-container > td").html();
+            $.post("/auth/lemonde/get_lemonde", {
+                country: countryP,
+            }, function (data) {
+              console.log(data);
+              for (let i = 0; i < 10; i++) {
+                let article = data.news[i];
+                if (article.title && article.description && article.url) {
+                $("#articles-container > #td-title").append("<div>" + article.title + "</div>");
+                $("#articles-container > #td-body").append("<div>" + article.description+ "</div>");
+                $("#articles-container > #td-link").append("<div><a target='_blank' href=" + article.url + ">" + article.url + "</a></div>");
+              }
+                console.log(i);
+              }
+            });
+        }
+        getlemonde(countryP);
+        setInterval(getlemonde, timerP * 60000 * 60, countryP);
+    });
+</script>

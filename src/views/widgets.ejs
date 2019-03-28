@@ -1,0 +1,131 @@
+<!DOCTYPE HTML>
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/style.css" />
+<% include partials/navbar %>
+
+<body>
+  <main>
+    <h2 class="title-widgets">Choose yours widgets!</h2>
+    <hr>
+    <table style="width:100%; margin-bottom: 20px">
+      <td width="50%">
+        <% if (services) { %>
+        <div class="form-group">
+          <div class="img-for-select">
+            <% services.forEach(function(service) { %>
+            <% if (service && service.widgets[0]) { %>
+            <% service.widgets.forEach(function(wid) { %>
+              <img src="<%= wid.img %>" alt="icon" /> <br/>
+            <% });}}); %>
+          </div>
+          <select id="selectpicker" data-component="mnr-select" multiple="multiple">
+            <% services.forEach(function(service) { %>
+            <% if (service && service.widgets[0]) { %>
+            <% service.widgets.forEach(function(wid) { %>
+            <option data-service=<%=service.name%> data-wid=
+              <%=wid.name%>>
+              <%= wid.id %>
+            </option>
+            <% });}}); %>
+          </select>
+        </div> <br />
+        <button id="validateWidgets" class="btn btn-primary btn-md">Add it</button>
+        <% } else { %>
+        <p>
+          We are sorry but all our services are disabled currently.</p>
+        <% } %>
+      </td>
+      <td width="50%" id="formP">
+        <div id="params"></div>
+        <button class="btn btn-primary btn-md" id="sendP" style="display:none;">Confirm</button>
+      </td>
+    </table>
+    <hr>
+    <h2 class="title-widgets">Manage yours widgets!</h2>
+    <table style="width:100%; margin-bottom: 20px">
+      <td width="50%">
+        <% if (user.widgets) { %>
+        <div class="form-group">
+          <div class="img-for-select">
+            <% user.widgets.forEach(function(wid) { %>
+              <img src="<%= wid.img %>" alt="icon" /> <br/>
+            <% }); %>
+          </div>
+          <select id="deletepicker" data-component="mnr-select" multiple="multiple">
+            <% user.widgets.forEach(function(wid) { %>
+            <option data-wid=<%=wid.name%> data-params=
+              <%= JSON.stringify(wid.params) %> data-ind=
+              <%= wid.ind %>>
+              <%= wid.id %>
+            </option>
+            <% }); %>
+          </select>
+        </div><br/>
+        <button class="btn btn-primary btn-md" id="deleteWidget">Inspect Widget</button>
+        <% } %>
+      </td>
+      <td width="50%" id="formD">
+        <div id="paramsD"></div>
+        <button class="btn btn-primary btn-md" id="widgetD" style="display:none;">Delete Widget</button>
+      </td>
+    </table>
+    <hr>
+  </main>
+</body>
+<% include partials/footer %>
+
+</html>
+
+<script>
+  var valuesSelected;
+  $("#validateWidgets").click(function () {
+    valuesSelected = {
+      "service": $("#selectpicker option:selected").data("service"),
+      "name": $("#selectpicker option:selected").data("wid")
+    };
+    $.post("/auth/" + valuesSelected.service + "/" + valuesSelected.name, function (data) {
+      $("#params").html(data);
+      $("#sendP").toggle(true)
+    });
+  });
+  $("#sendP").click(function () {
+    var params = {};
+    for (var i = 0; i < $("#params").find('input').length; i++) {
+      params[$("#params").find('input')[i].name] = $("#params").find('input')[i].value;
+    }
+    $.post("/widgets/update_w", {
+      valuesSelected: valuesSelected,
+      params: params
+    }, function () {
+      $("#params").html("");
+      $("#sendP").toggle(false)
+      location.reload()
+    })
+  })
+  let widToDelete = {};
+  $("#deleteWidget").click(function () {
+    $("#paramsD").html("")
+    widToDelete = {
+      "params": $("#deletepicker option:selected").data("params"),
+      "name": $("#deletepicker option:selected").data("wid"),
+      "index": $("#deletepicker option:selected").data("ind")
+    };
+    for (var attribute in widToDelete.params)
+      $("#paramsD").append("<span style='text-transform: capitalize'> <h4>" + attribute + ": </h4></span> <p> <strong>" + widToDelete.params[
+        attribute] + " </strong></p></br>");
+    $("#widgetD").toggle(true)
+  });
+  $("#widgetD").click(function () {
+    $("#paramsD").html("")
+    $.post("/widgets/remove_w", {
+      index: widToDelete.index
+    }, function (data, err, xhr) {
+      if (xhr.status == 200) {
+        $("#params").html("");
+        $("#widgetD").toggle(false)
+        location.reload()
+      }
+    })
+  })
+</script>

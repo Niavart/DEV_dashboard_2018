@@ -1,0 +1,29 @@
+<html>
+<div class="widget-class" id=<%=widP.u_widget.ind %>>
+    <script>
+        $(function () {
+            var idP = '<%= widP.u_widget.ind %>'
+            var linkP = '<%= (widP.u_widget.params.link ? widP.u_widget.params.link : "") %>'
+            var limitP = '<%= (widP.u_widget.params.limit ? widP.u_widget.params.limit : 1) %>'
+            var timerP = '<%= (widP.u_widget.params.timer ? widP.u_widget.params.timer : 999) %>'
+
+            function getrss(linkP, limitP) {
+                $("#" + idP).html("")
+                $.post("/auth/rss/get_rss", {
+                    link: linkP,
+                    limit: limitP
+                }, function (data) {
+                    data.forEach(rsscontent => {
+                        $("#" + idP).append("<ul><a href=" + rsscontent.link + "><span>" +
+                            rsscontent.content +
+                            "</span></a></ul>")
+                    });
+                });
+            }
+            getrss(linkP, limitP)
+            setInterval(getrss, timerP * 60000 * 60, linkP, limitP);
+        });
+    </script>
+</div><hr>
+
+</html>

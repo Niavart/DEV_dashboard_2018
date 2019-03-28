@@ -1,0 +1,87 @@
+[{
+        "name": "weather",
+        "widgets": [{
+            "name": "city_temperature",
+            "description": "Affichage de la temperature pour une ville",
+            "id": "Weather",
+            "img": "/weather.png",
+            "params": [{
+                "name": "city",
+                "type": "string"
+            }]
+        }]
+    }, {
+        "name": "rss",
+        "widgets": [{
+            "name": "article_list",
+            "description": "Affichage de la liste des derniers articles",
+            "id": "Rss",
+            "img": "/rss.png",
+            "params": [{
+                "name": "link",
+                "type": "string"
+            }, {
+                "name": "number",
+                "type": "integer"
+            }]
+        }]
+    },
+    {
+        "name": "outlook",
+        "widgets": [{
+            "name": "read_outlook_mail",
+            "description": "Affichage de la liste des 20 derniers mails",
+            "id": "Outlook Email",
+            "img": "/email.png",
+            "params": [{
+                "name": "outlook email",
+                "type": "string"
+            }]
+        }, {
+            "name": "outlook_calendar",
+            "description": "Affichage de votre calendrier",
+            "id": "Outlook Calendar",
+            "img": "/calendrier.png",
+            "params": [{
+                "name": "outlook calendar",
+                "type": "string"
+            }]
+        },
+        {
+            "name": "outlook_contacts",
+            "description": "Affichage de votre contacts",
+            "id": "Outlook Contacts",
+            "img": "/contacts.png",
+            "params": [{
+                "name": "outlook contacts",
+                "type": "string"
+            }]
+        }]
+      },
+      {
+          "name": "lemonde",
+          "widgets": [{
+              "name": "get_news",
+              "description": "Affichage de la liste des news",
+              "id": "LeMonde",
+              "img": "/news.png",
+              "params": [{
+                  "name": "le monde",
+                  "type": "string"
+              }]
+          }]
+      },
+    {
+        "name": "googleMaps",
+        "widgets": [{
+            "name": "googlemaps-view",
+            "description": "Affichage de la position sur google maps",
+            "id": "Google Maps",
+            "img": "/route.png",
+            "params": [{
+                "name": "Google Maps",
+                "type": "string"
+            }]
+        }]
+    }
+]

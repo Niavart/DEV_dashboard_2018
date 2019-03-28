@@ -1,0 +1,27 @@
+<!DOCTYPE HTML>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<html>
+<link rel="stylesheet" type="text/css" href="/style.css" />
+<% include partials/navbar %>
+
+<body>
+  <h3 style="text-align: center; background-color: aliceblue;"> Welcome to your dashboard,
+    <%= user.username %>!
+  </h3>
+  <div class="container">
+      <% if (widgets && widgets[0]) { widgets.forEach(function(wid) { %>
+        <%- include('partials/' +wid.u_widget.name, { widP:wid, userP:user}) %>
+      <% });} else { %>
+        <div class="no-widget">
+          <h2 class="no-widget-title">You don't have any widget!</h2><br>
+          <div class="click-here-to-add">
+            <h3 style="float: right">Click <a href="/widgets">here</a> to add some !</h3>
+            <img src="/click-here.png" alt="icon"/>
+          </div>
+        </div>
+      <% } %>
+  </div>
+</body>
+<% include partials/footer %>
+
+</html>
